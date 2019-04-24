@@ -1,6 +1,6 @@
-from filereader import FileReader
+from .filereader import FileReader
 
 
-def load(file):
+def load(file, read_all=False, to_python=False):
     reader = FileReader(file)
-    return reader.read()
+    return reader.read(read_all=read_all, to_python=to_python)

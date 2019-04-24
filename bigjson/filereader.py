@@ -1,5 +1,7 @@
-from array import Array
-from obj import Object
+from __future__ import unicode_literals
+import codecs
+from .array import Array
+from .obj import Object
 
 
 class FileReader:
@@ -48,7 +50,7 @@ class FileReader:
                 self._get()
                 num += '.' + self._get()
                 if num[-1] not in '01234567890':
-                    raise Exception(u'Expected digit after dot!')
+                    raise Exception('Expected digit after dot!')
                 while self._peek() in '0123456789':
                     num += self._get()
                 num = float(num)
@@ -76,37 +78,37 @@ class FileReader:
 
         # String
         if self._skip_if_next('"'):
-            string = u''
+            string = ''
 
             while True:
                 c = self._get()
 
-                if c == u'"':
+                if c == '"':
                     break
 
-                if c == u'\\':
+                if c == '\\':
                     c = self._get()
-                    if c == u'"':
-                        string += u'"'
-                    elif c == u'\\':
-                        string += u'\\'
-                    elif c == u'/':
-                        string += u'/'
-                    elif c == u'b':
-                        string += u'\b'
-                    elif c == u'f':
-                        string += u'\f'
-                    elif c == u'n':
-                        string += u'\n'
-                    elif c == u'r':
-                        string += u'\r'
-                    elif c == u't':
-                        string += u'\t'
-                    elif c == u'u':
+                    if c == '"':
+                        string += '"'
+                    elif c == '\\':
+                        string += '\\'
+                    elif c == '/':
+                        string += '/'
+                    elif c == 'b':
+                        string += '\b'
+                    elif c == 'f':
+                        string += '\f'
+                    elif c == 'n':
+                        string += '\n'
+                    elif c == 'r':
+                        string += '\r'
+                    elif c == 't':
+                        string += '\t'
+                    elif c == 'u':
                         unicode_bytes = self._read(4)
-                        string += ('\\u' + unicode_bytes).decode('unicode_escape')
+                        string += codecs.decode('\\u' + unicode_bytes, 'unicode_escape')
                     else:
-                        raise Exception(u'Unexpected {} in backslash encoding!'.format(c))
+                        raise Exception('Unexpected {} in backslash encoding!'.format(c))
 
                 else:
                     string += c
@@ -129,7 +131,7 @@ class FileReader:
             else:
                 return Object(self, read_all)
 
-        raise Exception(u'Unexpected bytes!')
+        raise Exception('Unexpected bytes!')
 
     def _skip_whitespace(self):
         while True:
@@ -145,7 +147,7 @@ class FileReader:
     def _get(self):
         self._ensure_readbuf_left(1)
         if len(self.readbuf) - self.readbuf_read < 1:
-            raise Exception(u'Unexpected end of file when getting next byte!')
+            raise Exception('Unexpected end of file when getting next byte!')
         result = self.readbuf[self.readbuf_read]
         self.readbuf_read += 1
         return result
@@ -153,7 +155,7 @@ class FileReader:
     def _read(self, amount):
         self._ensure_readbuf_left(amount)
         if len(self.readbuf) - self.readbuf_read < amount:
-            raise Exception(u'Unexpected end of file reading a chunk!')
+            raise Exception('Unexpected end of file reading a chunk!')
         result = self.readbuf[self.readbuf_read:self.readbuf_read+amount]
         self.readbuf_read += amount
         return result

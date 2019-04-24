@@ -1,3 +1,11 @@
+from __future__ import unicode_literals
+
+try:
+    basestring
+except NameError:
+    basestring = str
+
+
 class Object:
 
     _GET_METHOD_RAISE_EXCEPTION = 0
@@ -27,7 +35,7 @@ class Object:
         self.reader._seek(self.begin_pos)
 
         if not self.reader._skip_if_next('{'):
-            raise Exception(u'Missing "{"!')
+            raise Exception('Missing "{"!')
 
         self.reader._skip_whitespace()
 
@@ -40,12 +48,12 @@ class Object:
             # there is an error and reading can be canceled.
             key = self.reader.read(read_all=False)
             if not isinstance(key, basestring):
-                raise Exception(u'Invalid key type in JSON object!')
+                raise Exception('Invalid key type in JSON object!')
 
             # Skip colon and whitespace around it
             self.reader._skip_whitespace()
             if not self.reader._skip_if_next(':'):
-                raise Exception(u'Missing ":"!')
+                raise Exception('Missing ":"!')
             self.reader._skip_whitespace()
 
             # Read value
@@ -60,7 +68,7 @@ class Object:
             elif self.reader._skip_if_next('}'):
                 break
             else:
-                raise Exception(u'Expected "," or "}"!')
+                raise Exception('Expected "," or "}"!')
 
     def get(self, key, default=None):
         return self._get(key, default, Object._GET_METHOD_RETURN_DEFAULT)
@@ -85,7 +93,7 @@ class Object:
         self.reader._seek(self.begin_pos)
 
         if not self.reader._skip_if_next('{'):
-            raise Exception(u'Missing "{"!')
+            raise Exception('Missing "{"!')
 
         self.reader._skip_whitespace()
 
@@ -98,12 +106,12 @@ class Object:
             # there is an error and reading can be canceled.
             key = self.reader.read(read_all=False)
             if not isinstance(key, basestring):
-                raise Exception(u'Invalid key type in JSON object!')
+                raise Exception('Invalid key type in JSON object!')
 
             # Skip colon and whitespace around it
             self.reader._skip_whitespace()
             if not self.reader._skip_if_next(':'):
-                raise Exception(u'Missing ":"!')
+                raise Exception('Missing ":"!')
             self.reader._skip_whitespace()
 
             # Skip or read value
@@ -121,7 +129,7 @@ class Object:
             elif self.reader._skip_if_next('}'):
                 break
             else:
-                raise Exception(u'Expected "," or "}"!')
+                raise Exception('Expected "," or "}"!')
 
         return python_dict
 
@@ -134,14 +142,14 @@ class Object:
     def _get(self, key, default, method):
 
         if not isinstance(key, basestring):
-            raise TypeError(u'Key must be string!')
+            raise TypeError('Key must be string!')
 
         # TODO: Use some kind of lookup table!
 
         # Rewind to requested element from the beginning
         self.reader._seek(self.begin_pos)
         if not self.reader._skip_if_next('{'):
-            raise Exception(u'Missing "{"!')
+            raise Exception('Missing "{"!')
         self.reader._skip_whitespace()
 
         if self.reader._is_next('}'):
@@ -155,12 +163,12 @@ class Object:
         while True:
             key2 = self.reader.read(read_all=False)
             if not isinstance(key2, basestring):
-                raise Exception(u'Invalid key type in JSON object!')
+                raise Exception('Invalid key type in JSON object!')
 
             # Read colon
             self.reader._skip_whitespace()
             if not self.reader._skip_if_next(':'):
-                raise Exception(u'Missing ":"!')
+                raise Exception('Missing ":"!')
             self.reader._skip_whitespace()
 
             # If this is the requested value, then it doesn't
@@ -186,7 +194,7 @@ class Object:
                 else:
                     return False
             else:
-                raise Exception(u'Expected "," or "}"!')
+                raise Exception('Expected "," or "}"!')
 
     def __len__(self):
         if self.length < 0:

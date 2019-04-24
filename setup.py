@@ -4,11 +4,10 @@ from setuptools import setup
 
 setup(
     name='bigjson',
-    version='1.0',
+    version='1.1',
     packages=['bigjson'],
     description='Python library that reads JSON files of any size.',
-    author='Henrik Heino',
-    author_email='henrik.heino@gmail.com',
-    url='https://github.com/henu/bigjson',
+    author='Henrik Heino, Ruben Seyer',
+    url='https://github.com/rubenseyer/bigjson',
     license='MIT',
 )
