@@ -8,7 +8,7 @@ except NameError:
 
 class Array:
 
-    _MAX_INDEX_LOOKUP_LENGTH = 1000
+    _MAX_INDEX_LOOKUP_LENGTH = 1024
 
     def __init__(self, reader, read_all):
         self.reader = reader
@@ -66,7 +66,7 @@ class Array:
         """ Reads and validates all bytes in
         the Array. Also counts its length.
 
-        If 'to_python' is set to true, then returns list.
+        :param to_python: whether to return a list
         """
         if to_python:
             python_list = []
@@ -117,7 +117,7 @@ class Array:
         if seek_index == (len(self.index_lookup) + 1) * self.index_lookup_multiplier:
             self.index_lookup.append(self.reader._tell_read_pos())
             # If lookup table grows too big, half of its members will be removed
-            if len(self.index_lookup) > Array._MAX_INDEX_LOOKUP_LENGTH:
+            if len(self.index_lookup) >= Array._MAX_INDEX_LOOKUP_LENGTH:
                 self.index_lookup = [pos for i, pos in enumerate(self.index_lookup) if i % 2 == 1]
                 self.index_lookup_multiplier *= 2
 
