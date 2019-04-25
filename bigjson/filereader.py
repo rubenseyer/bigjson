@@ -43,7 +43,7 @@ class FileReader:
                 num += self._get()
             # Read integer part
             if num[-1] != '0':
-                while self._peek() in '0123456789':
+                while self._peek() is not None and self._peek() in '0123456789':
                     num += self._get()
             # Read possible decimal part and convert to float
             if self._peek() == '.':
@@ -51,13 +51,13 @@ class FileReader:
                 num += '.' + self._get()
                 if num[-1] not in '01234567890':
                     raise Exception('Expected digit after dot!')
-                while self._peek() in '0123456789':
+                while self._peek() is not None and self._peek() in '0123456789':
                     num += self._get()
                 num = float(num)
             else:
                 num = int(num)
             # Read possible exponent
-            if self._peek() in 'eE':
+            if self._peek() is not None and self._peek() in 'eE':
                 self._get()
                 exp = self._get()
                 exp_neg = False
@@ -66,7 +66,7 @@ class FileReader:
                     exp = self._get()
                 elif exp == '+':
                     exp = self._get()
-                while self._peek() in '0123456789':
+                while self._peek() is not None and self._peek() in '0123456789':
                     exp += self._get()
                 exp = int(exp)
                 exp = 10 ** exp
