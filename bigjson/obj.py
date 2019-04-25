@@ -65,11 +65,14 @@ class Object:
 
             # Read value
             value = self.reader.read(read_all=True, to_python=to_python)
+            seek_pos = self.reader._tell_read_pos()
 
+            # Yield value, remembering offset
             if yield_offsets:
                 yield (key, value, offset)
             else:
                 yield (key, value)
+            self.reader._seek(seek_pos)
 
             # Read comma or "}" and whitespace around it.
             self.reader._skip_whitespace()
@@ -103,11 +106,11 @@ class Object:
 
         self.length = 0
 
-        for key, value, offset in self.iteritems(to_python=to_python, yield_offsets=True):
+        for keyvalueoffset in self.iteritems(to_python=to_python, yield_offsets=populate_lookup):
             if to_python:
-                python_dict[key] = value
+                python_dict[keyvalueoffset[0]] = keyvalueoffset[1]
             if populate_lookup and len(self.key_lookup) < Object._MAX_KEY_LOOKUP_LENGTH:
-                self.key_lookup[key] = offset
+                self.key_lookup[keyvalueoffset[0]] = keyvalueoffset[2]
             self.length += 1
 
         return python_dict

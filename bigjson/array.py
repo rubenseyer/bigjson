@@ -52,7 +52,12 @@ class Array:
 
         while True:
             # Skip or read element
-            yield self.reader.read(read_all=True, to_python=to_python)
+            rv = self.reader.read(read_all=True, to_python=to_python)
+
+            # Yield element, remembering offset
+            seek_pos = self.reader._tell_read_pos()
+            yield rv
+            self.reader._seek(seek_pos)
 
             # Skip comma or "]" and whitespace around it
             self.reader._skip_whitespace()
