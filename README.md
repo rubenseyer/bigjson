@@ -2,11 +2,15 @@ bigjson
 =======
 
 Python library that reads JSON files of any size.
-This fork is compatible with (recent versions of) both Python 2 and 3.
 
 The magic is in the Array and Object types.
 They load stuff from the file only when necessary.
 
+Fork differences
+----------------
+ * Compatible with (recent versions of) both Python 2 and 3.
+ * Support for equivalent standard library methods on immutable dict/list
+ * Support slicing and negative indexes on Array (performance penalty when reading in reverse)
 
 Example
 -------

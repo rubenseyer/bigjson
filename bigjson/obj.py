@@ -31,7 +31,7 @@ class Object:
     def items(self):
         return [keyvalue for keyvalue in self.iteritems()]
 
-    def iteritems(self):
+    def iteritems(self, to_python=False):
         self.reader._seek(self.begin_pos)
 
         if not self.reader._skip_if_next('{'):
@@ -57,7 +57,7 @@ class Object:
             self.reader._skip_whitespace()
 
             # Read value
-            value = self.reader.read(read_all=True)
+            value = self.reader.read(read_all=True, to_python=to_python)
 
             yield (key, value)
 
@@ -74,7 +74,6 @@ class Object:
         return self._get(key, default, Object._GET_METHOD_RETURN_DEFAULT)
 
     def to_python(self):
-        self.reader._seek(self.begin_pos)
         return self._read_all(to_python=True)
 
     def _read_all(self, to_python=False):
@@ -90,46 +89,10 @@ class Object:
 
         self.length = 0
 
-        self.reader._seek(self.begin_pos)
-
-        if not self.reader._skip_if_next('{'):
-            raise Exception('Missing "{"!')
-
-        self.reader._skip_whitespace()
-
-        if self.reader._skip_if_next('}'):
-            return python_dict
-
-        while True:
-            # Skip key. Reading all is not required, because strings
-            # are read fully anyway, and if it is not string, then
-            # there is an error and reading can be canceled.
-            key = self.reader.read(read_all=False)
-            if not isinstance(key, basestring):
-                raise Exception('Invalid key type in JSON object!')
-
-            # Skip colon and whitespace around it
-            self.reader._skip_whitespace()
-            if not self.reader._skip_if_next(':'):
-                raise Exception('Missing ":"!')
-            self.reader._skip_whitespace()
-
-            # Skip or read value
+        for key, value in self.iteritems(to_python=to_python):
             if to_python:
-                python_dict[key] = self.reader.read(read_all=True, to_python=True)
-            else:
-                self.reader.read(read_all=True)
-
+                python_dict[key] = value
             self.length += 1
-
-            # Read comma or "}" and whitespace around it.
-            self.reader._skip_whitespace()
-            if self.reader._skip_if_next(','):
-                self.reader._skip_whitespace()
-            elif self.reader._skip_if_next('}'):
-                break
-            else:
-                raise Exception('Expected "," or "}"!')
 
         return python_dict
 
@@ -140,7 +103,6 @@ class Object:
         return self._get(key, None, Object._GET_METHOD_RAISE_EXCEPTION)
 
     def _get(self, key, default, method):
-
         if not isinstance(key, basestring):
             raise TypeError('Key must be string!')
 
@@ -200,3 +162,6 @@ class Object:
         if self.length < 0:
             self._read_all()
         return self.length
+
+    def __iter__(self):
+        return (keyvalue[0] for keyvalue in self.iteritems())
