@@ -16,7 +16,7 @@ class Array:
         self.length = -1
 
         # For optimizing index queries
-        self.last_known_pos = 0
+        self.last_known_pos = self.begin_pos
         self.last_known_pos_index = 0
         self.index_lookup = []
         self.index_lookup_multiplier = 1
@@ -94,11 +94,11 @@ class Array:
         # too small, then start from beginning.
         elif not self.index_lookup or index < self.index_lookup_multiplier:
             seek_index = 0
-            seek_pos = 0
+            seek_pos = self.begin_pos
 
         # Try from lookup table
         else:
-            lookup_table_index = (index - self.index_lookup_multiplier) / self.index_lookup_multiplier
+            lookup_table_index = (index - self.index_lookup_multiplier) // self.index_lookup_multiplier
             # Lookup table index should always be small enough,
             # because if too big indices are requested, then
             # last_known_pos kicks in at the start.
