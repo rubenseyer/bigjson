@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 try:
     xrange
+    from itertools import izip as zip
 except NameError:
     xrange = range
 
@@ -166,3 +167,8 @@ class Array:
 
     def __contains__(self, value):
         return any(v is value or v == value for v in self)
+
+    def __eq__(self, other):
+        if len(other) != len(self):
+            return False
+        return all(a is b or a == b for a, b in zip(self, other))

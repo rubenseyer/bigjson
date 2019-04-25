@@ -194,3 +194,16 @@ class Object:
 
     def __iter__(self):
         return (keyvalue[0] for keyvalue in self.iteritems())
+
+    def __eq__(self, other):
+        if not isinstance(other, Object) and not isinstance(other, dict):
+            return NotImplemented
+        self_keys = sorted(k for k in self)
+        other_keys = sorted(k for k in other)
+        if self_keys != other_keys:
+            return False
+        for k, v in self.iteritems():
+            ov = other[k]
+            if not (v is ov or v == ov):
+                return False
+        return True
